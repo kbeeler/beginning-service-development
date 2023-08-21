@@ -1,4 +1,6 @@
+using BusinessClockApi;
 using BusinessClockApi.Models;
+using BusinessClockApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<BusinessClock>();
+builder.Services.AddSingleton<ISystemTime, SystemTime>();
 
 //config above this line
 var app = builder.Build();
@@ -17,7 +22,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/status", () =>
+app.MapGet("/status", (BusinessClock clock) =>
 {
     var fakeResponse = new ClockResponseModel
     {
