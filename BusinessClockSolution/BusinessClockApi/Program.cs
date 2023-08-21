@@ -38,4 +38,6 @@ app.MapGet("/status", () =>
 
 app.Run();
 
+//Bc we are not using Static 
+public partial class Program { }
 
