@@ -1,13 +1,9 @@
 ﻿namespace BusinessClockApi.Services;
 
-
-
 public interface ISystemTime
 {
     DateTime GetCurrent();
 }
-
-
 
 public class SystemTime : ISystemTime
 {

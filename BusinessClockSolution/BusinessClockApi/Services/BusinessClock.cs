@@ -2,22 +2,22 @@
 
 namespace BusinessClockApi;
 
-
-
 public class BusinessClock
 {
+
     private readonly ISystemTime _systemTime;
 
-    public  BusinessClock(ISystemTime systemTime)
+    public BusinessClock(ISystemTime systemTime)
     {
         _systemTime = systemTime;
     }
 
-
-    public bool IsOpen()
+    public virtual bool IsOpen()
     {
-        var now = _systemTime.GetCurrent(); //Magic Global thing
+        var now = _systemTime.GetCurrent(); // "Impure"
+
         var dayOfWeek = now.DayOfWeek;
+
         var hour = now.Hour;
 
         var openingTime = new TimeSpan(9, 0, 0);
@@ -28,10 +28,9 @@ public class BusinessClock
             DayOfWeek.Sunday => false,
             DayOfWeek.Saturday => false,
             _ => hour >= openingTime.Hours && hour < closingTime.Hours,
-
+            
         };
 
         return isOpen;
-
     }
 }
