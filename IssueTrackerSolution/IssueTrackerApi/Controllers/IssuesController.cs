@@ -1,7 +1,9 @@
 ﻿using IssueTrackerApi.Models;
 using Marten;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace IssueTrackerApi.Controllers;
 
@@ -44,8 +46,16 @@ public class IssuesController : ControllerBase
         }
     }
 
+    [HttpGet("/issues2")]
+    public async Task< ActionResult> GetIssues()
+    {
+        using var session = _documentStore.LightweightSession();
+        var data = await session.Query<IssueResponse>().ToListAsync();
+        return Ok(data);
+    }
+
     [HttpGet("/issues")]
-    public async Task<ActionResult> GetIssues([FromQuery] string status = "All")
+    public async Task<ActionResult> GetIssues(CancellationToken ct, [FromQuery] string status = "All")
     {
 
         using var session = _documentStore.LightweightSession();
@@ -58,7 +68,7 @@ public class IssuesController : ControllerBase
             IssueStatus statusEnum;
             if(Enum.TryParse<IssueStatus>(status, true,  out statusEnum))
             {
-                data = await session.Query<IssueResponse>().Where(i => i.Status == statusEnum).ToListAsync();
+                data = await session.Query<IssueResponse>().Where(i => i.Status == statusEnum).ToListAsync(ct);
 
             } else
             {
